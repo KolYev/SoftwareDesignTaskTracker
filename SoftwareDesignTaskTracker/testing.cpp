@@ -1,6 +1,6 @@
 #include "testing.h"
 
-#define MAKE_VAR_INFO(variable) VarInfo{ #variable, variable }
+#define MAKE_VAR_INFO(variable) VarInfo{ #variable, variable, &variable }
 
 VarInfo runTesting() {
 	int a = 0;

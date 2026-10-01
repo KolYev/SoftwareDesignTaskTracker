@@ -80,16 +80,21 @@ namespace SoftwareDesignTaskTracker {
 	private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
 		VarInfo info = runTesting();
 
-		System::String^ varName = msclr::interop::marshal_as<System::String^>(info.name);
-		int varValue = info.value;
+		System::String^ varName = msclr::interop::marshal_as<System::String^>(info.name); // имя переменной
+		int varValue = info.value; // значение переменной
+		System::IntPtr ptr(info.address);
+		System::String^ hexAddress = "0x" + ptr.ToInt64().ToString("X");
 
 		System::Windows::Forms::Label^ dynamicLabel = gcnew System::Windows::Forms::Label();
 
-		dynamicLabel->Text = varName + " = " + varValue;
+		dynamicLabel->Text = "Имя переменной: " + varName + "\n" +
+			"Значение переменной: " + varValue + "\n" +
+			"Адрес переменной: " + hexAddress;
+		
 
-		// координаты и размер текста
+		// координаты и авторазмер текста
 		dynamicLabel->Location = System::Drawing::Point(50, 100);
-		dynamicLabel->Size = System::Drawing::Size(150, 30);
+		dynamicLabel->AutoSize = true;
 
 		dynamicLabel->ForeColor = System::Drawing::Color::Black;
 
