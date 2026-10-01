@@ -78,7 +78,7 @@ namespace SoftwareDesignTaskTracker {
 		}
 #pragma endregion
 	private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
-		VarInfo info = runTesting();
+		VarInfo info = Testing();
 
 		System::String^ varName = msclr::interop::marshal_as<System::String^>(info.name); // имя переменной
 		int varValue = info.value; // значение переменной
@@ -87,16 +87,31 @@ namespace SoftwareDesignTaskTracker {
 
 		System::Windows::Forms::Label^ dynamicLabel = gcnew System::Windows::Forms::Label();
 
-		dynamicLabel->Text = "Имя переменной: " + varName + "\n" +
-			"Значение переменной: " + varValue + "\n" +
-			"Адрес переменной: " + hexAddress;
-		
+		System::String^ valuesText = "";
+
+		if (info.size > 1) // если массив
+		{
+			valuesText = "[";
+			for (size_t i = 0; i < info.size; i++) {
+				valuesText += info.arrayPtr[i].ToString();
+				if (i < info.size - 1) valuesText += ", ";
+			}
+			valuesText += "]";
+		} else {
+			// если обычная переменная
+			valuesText = info.value.ToString();
+		}
 
 		// координаты и авторазмер текста
 		dynamicLabel->Location = System::Drawing::Point(50, 100);
 		dynamicLabel->AutoSize = true;
 
 		dynamicLabel->ForeColor = System::Drawing::Color::Black;
+
+		dynamicLabel->Text = "Имя: " + varName + "\n" +
+			"Тип: " + (info.size > 1 ? "Массив (размер " + info.size + ")" : "Переменная") + "\n" +
+			"Значение: " + valuesText + "\n" +
+			"Адрес: " + hexAddress;
 
 		this->Controls->Add(dynamicLabel);
 	}
