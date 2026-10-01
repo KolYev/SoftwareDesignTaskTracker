@@ -139,6 +139,7 @@
     <ClInclude Include="App.h">
       <FileType>CppForm</FileType>
     </ClInclude>
+    <ClInclude Include="testing.h" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="App.resx">

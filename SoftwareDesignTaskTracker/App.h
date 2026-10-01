@@ -1,4 +1,6 @@
 ﻿#pragma once
+#include "testing.h"
+#include <msclr/marshal_cppstd.h>
 
 namespace SoftwareDesignTaskTracker {
 
@@ -61,6 +63,7 @@ namespace SoftwareDesignTaskTracker {
 			this->button1->TabIndex = 0;
 			this->button1->Text = L"Начать контроль";
 			this->button1->UseVisualStyleBackColor = true;
+			this->button1->Click += gcnew System::EventHandler(this, &App::button1_Click);
 			// 
 			// App
 			// 
@@ -74,5 +77,13 @@ namespace SoftwareDesignTaskTracker {
 
 		}
 #pragma endregion
+	private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
+		VarInfo info = runTesting();
+
+		System::String^ varName = msclr::interop::marshal_as<System::String^>(info.name);
+		int varValue = info.value;
+
+		System::Windows::Forms::MessageBox::Show(varName + " = " + varValue);
+	}
 	};
 }
