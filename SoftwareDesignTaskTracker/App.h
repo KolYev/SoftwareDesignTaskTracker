@@ -83,7 +83,17 @@ namespace SoftwareDesignTaskTracker {
 		System::String^ varName = msclr::interop::marshal_as<System::String^>(info.name);
 		int varValue = info.value;
 
-		System::Windows::Forms::MessageBox::Show(varName + " = " + varValue);
+		System::Windows::Forms::Label^ dynamicLabel = gcnew System::Windows::Forms::Label();
+
+		dynamicLabel->Text = varName + " = " + varValue;
+
+		// координаты и размер текста
+		dynamicLabel->Location = System::Drawing::Point(50, 100);
+		dynamicLabel->Size = System::Drawing::Size(150, 30);
+
+		dynamicLabel->ForeColor = System::Drawing::Color::Black;
+
+		this->Controls->Add(dynamicLabel);
 	}
 	};
 }
