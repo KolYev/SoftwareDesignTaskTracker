@@ -2,6 +2,38 @@
 #include "testing.h"
 #include <msclr/marshal_cppstd.h>
 
+inline System::String^ ToManaged(const std::string& s) {
+	return msclr::interop::marshal_as<System::String^>(s);
+}
+
+System::String^ BuildFunctionSignature(Info% info) {
+	System::Text::StringBuilder^ sb = gcnew System::Text::StringBuilder();
+
+	// возвращаемый тип
+	if (!info.returnType.empty())
+		sb->Append(ToManaged(info.returnType))->Append(" ");
+	else
+		sb->Append("void ");
+
+	// имя функции
+	sb->Append(ToManaged(info.name))->Append("(");
+
+	// параметры
+	if (info.paramCount == 0) {
+		sb->Append("void");
+	}
+	else {
+		for (int i = 0; i < info.paramCount; ++i) {
+			if (i > 0) sb->Append(", ");
+			sb->Append(ToManaged(info.paramTypes[i]));
+			sb->Append(" arg")->Append(i + 1);
+		}
+	}
+
+	sb->Append(")");
+	return sb->ToString();
+}
+
 namespace SoftwareDesignTaskTracker {
 
 	using namespace System;
@@ -106,13 +138,25 @@ namespace SoftwareDesignTaskTracker {
 		}
 		else if (info.type == InfoType::Function) { // если функция
 			typeText = "Функия";
-			valuesText = "Адрес функции";
+			System::String^ retType = info.returnType.empty() ? "void" : ToManaged(info.returnType);
+
+			valuesText = retType + ", параметров: " + info.paramCount;
+
+			System::String^ signature = BuildFunctionSignature(info);
+			valuesText += "\nСигнатура: " + signature;
+
+			if (info.paramCount > 0) {
+				valuesText += "\nТипы параметров: ";
+				for (int i = 0; i < info.paramCount; ++i) {
+					if (i > 0) valuesText += ", ";
+					valuesText += ToManaged(info.paramTypes[i]);
+				}
+			}
 		}
 
 		// координаты и авторазмер текста
 		dynamicLabel->Location = System::Drawing::Point(50, 100);
 		dynamicLabel->AutoSize = true;
-
 		dynamicLabel->ForeColor = System::Drawing::Color::Black;
 
 		dynamicLabel->Text = "Имя: " + varName + "\n" +
