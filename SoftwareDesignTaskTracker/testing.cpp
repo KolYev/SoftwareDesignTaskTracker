@@ -1,47 +1,51 @@
 #include "testing.h"
+#include <sstream>
 #include <typeinfo>
-#include <tuple>
-
-#define MAKE_VAR_INFO(variable) Info{ #variable, variable, &variable, 0, nullptr, InfoType::Variable }
-#define MAKE_ARR_INFO(arr) Info{#arr, arr[0], arr, sizeof(arr)/sizeof(arr[0]), arr, InfoType::Array}
 
 template <typename T>
-struct FunctionTraits;
+Info MakeVarInfo(const char* name, T& var) {
+    Info info;
+    info.name = name;
+    info.typeName = typeid(T).name();
+    info.address = &var;
+    info.type = InfoType::Variable;
 
-template <typename R, typename... Args>
-struct FunctionTraits<R(*)(Args...)> {
-    static constexpr int arity = sizeof...(Args);
+    info.getValue = [&var] {
+        std::ostringstream os;
+        os << var;
+        return os.str();
+        };
 
-    static std::vector<std::string> arg_types() {
-        return std::vector<std::string>{ typeid(Args).name()... };
-    }
-
-    static std::string return_type_name() {
-        return typeid(R).name();
-    }
-};
-
-template <typename R, typename... Args>
-Info MakeFunctionInfo(const char* name, R(*func)(Args...)) {
-    using Traits = FunctionTraits<R(*)(Args...)>;
-
-    return Info{
-        name,
-        0,
-        reinterpret_cast<void*>(func),
-        0,
-        nullptr,
-        InfoType::Function,
-        Traits::arity,
-        Traits::arg_types(),
-        Traits::return_type_name()
-    };
+    info.setValue = [&var](const std::string& s) {
+        if constexpr (std::is_same_v<T, std::string>) {
+            var = s;
+        }
+        else {
+            std::istringstream is(s);
+            T tmp{};
+            if (is >> tmp) var = tmp;
+        }
+        };
+    return info;
 }
 
-#define MAKE_FUNC_INFO(func) MakeFunctionInfo(#func, func)
+template <typename T, size_t N>
+Info MakeArrInfo(const char* name, T(&arr)[N]) {
+    Info info;
+    info.name = name;
+    info.typeName = typeid(T).name();
+    info.address = arr;
+    info.type = InfoType::Array;
+    info.size = N;
+    if constexpr (std::is_same_v<T, int>)
+        info.arrayPtr = arr;
+    return info;
+}
+
+#define MAKE_VAR_INFO(v) MakeVarInfo(#v, v)
+#define MAKE_ARR_INFO(a) MakeArrInfo(#a, a)
 
 Info Testing() {
-    int a = 4;
-
+    static int a = 4;        
     return MAKE_VAR_INFO(a);
 }
