@@ -78,7 +78,7 @@ namespace SoftwareDesignTaskTracker {
 		}
 #pragma endregion
 	private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
-		VarInfo info = Testing();
+		Info info = Testing();
 
 		System::String^ varName = msclr::interop::marshal_as<System::String^>(info.name); // имя переменной
 		int varValue = info.value; // значение переменной
@@ -89,17 +89,24 @@ namespace SoftwareDesignTaskTracker {
 
 		System::String^ valuesText = "";
 
-		if (info.size > 1) // если массив
+		System::String^ typeText;
+
+		if (info.type == InfoType::Array) // если массив
 		{
+			typeText = "Массив: " + info.size + " элементов";
 			valuesText = "[";
 			for (size_t i = 0; i < info.size; i++) {
 				valuesText += info.arrayPtr[i].ToString();
 				if (i < info.size - 1) valuesText += ", ";
 			}
 			valuesText += "]";
-		} else {
-			// если обычная переменная
+		} else if (info.type == InfoType::Variable) { // если обычная переменная
+			typeText = "Переменная";
 			valuesText = info.value.ToString();
+		}
+		else if (info.type == InfoType::Function) { // если функция
+			typeText = "Функия";
+			valuesText = "Адрес функции";
 		}
 
 		// координаты и авторазмер текста
@@ -109,7 +116,7 @@ namespace SoftwareDesignTaskTracker {
 		dynamicLabel->ForeColor = System::Drawing::Color::Black;
 
 		dynamicLabel->Text = "Имя: " + varName + "\n" +
-			"Тип: " + (info.size > 1 ? "Массив (размер " + info.size + ")" : "Переменная") + "\n" +
+			"Тип: " + typeText + "\n" +
 			"Значение: " + valuesText + "\n" +
 			"Адрес: " + hexAddress;
 

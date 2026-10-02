@@ -2,12 +2,20 @@
 #include <string>
 #include <vector>
 
-struct VarInfo {
+enum class InfoType {
+	Variable,
+	Array,
+	Function
+};
+
+struct Info {
 	std::string name;
 	int value;
 	void* address;
 	size_t size;
 	int* arrayPtr;
+	InfoType type;
 };
 
-VarInfo Testing();
+
+Info Testing();

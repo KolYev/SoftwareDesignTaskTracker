@@ -1,10 +1,15 @@
 #include "testing.h"
 
-#define MAKE_VAR_INFO(variable) VarInfo{ #variable, variable, &variable }
-#define MAKE_ARR_INFO(arr) VarInfo{#arr, arr[0], arr, sizeof(arr)/sizeof(arr[0]), arr};
+#define MAKE_VAR_INFO(variable) Info{ #variable, variable, &variable, 0, nullptr, InfoType::Variable }
+#define MAKE_ARR_INFO(arr) Info{#arr, arr[0], arr, sizeof(arr)/sizeof(arr[0]), arr, InfoType::Array};
+#define MAKE_FUNC_INFO(func) Info{ #func, 0, reinterpret_cast<void*>(func), 0, nullptr, InfoType::Function }
 
-VarInfo Testing() {
-	static int arr[] = { 1,2,3,4,5 };
+int square(int a) {
+	return a * a;
+}
 
-	return MAKE_ARR_INFO(arr);
+Info Testing() {
+	int result = square(2);
+
+	return MAKE_FUNC_INFO(square);
 }
