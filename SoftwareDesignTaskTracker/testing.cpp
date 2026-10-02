@@ -40,12 +40,8 @@ Info MakeFunctionInfo(const char* name, R(*func)(Args...)) {
 
 #define MAKE_FUNC_INFO(func) MakeFunctionInfo(#func, func)
 
-int square(int a) {
-    return a * a;
-}
-
 Info Testing() {
-    int result = square(2);
+    int a = 4;
 
-    return MAKE_FUNC_INFO(square);
+    return MAKE_VAR_INFO(a);
 }

@@ -69,6 +69,7 @@ namespace SoftwareDesignTaskTracker {
 			}
 		}
 	private: System::Windows::Forms::Button^ button1;
+
 	protected:
 
 	private:
@@ -135,6 +136,11 @@ namespace SoftwareDesignTaskTracker {
 		} else if (info.type == InfoType::Variable) { // если обычная переменная
 			typeText = "Переменная";
 			valuesText = info.value.ToString();
+			System::Windows::Forms::TextBox^ varBox = gcnew System::Windows::Forms::TextBox();
+			varBox->Text = valuesText;
+			varBox->Location = System::Drawing::Point(100, 200);
+			this->Controls->Add(varBox);
+
 		}
 		else if (info.type == InfoType::Function) { // если функция
 			typeText = "Функия";
