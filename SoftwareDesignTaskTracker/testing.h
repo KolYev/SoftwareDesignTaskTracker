@@ -3,6 +3,7 @@
 #include <vector>
 #include <functional>
 #include <type_traits>
+#include <typeinfo>
 
 enum class InfoType {
 	Variable,
@@ -28,6 +29,12 @@ struct Info {
 	int paramCount = 0;
 	std::vector<std::string> paramTypes;
 	std::string returnType;
+};
+
+struct CycleControl {
+	int step = 0;
+	bool run = false;
+	bool stop = true;
 };
 
 
